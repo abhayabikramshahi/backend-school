@@ -1,192 +1,141 @@
-/* General styles */
-* {
+*{
     margin: 0;
     padding: 0;
     box-sizing: border-box;
 }
-
 body {
     font-family: Arial, sans-serif;
-    background-color: #f4f4f4;
-    color: #333;
-    line-height: 1.6;
+    margin: 0;
+    padding: 0;
 }
 
-/* Container for main content */
-.container {
-    width: 80%;
-    margin: 20px auto;
-    background-color: #fff;
-    padding: 20px;
-    border-radius: 8px;
-    box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
-}
 
-/* Header styles */
-h1, h2 {
-    color: #333;
+
+header {
     text-align: center;
     margin-bottom: 20px;
 }
 
-/* Form styles */
-form {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
+header h1 {
+    color: #333;
+    font-size: 24px;
 }
 
-label {
-    font-weight: bold;
-    margin-bottom: 8px;
-    font-size: 1.1rem;
+nav ul {
+    list-style-type: none;
+    padding: 0;
 }
 
-input[type="text"],
-input[type="password"],
-input[type="submit"],
-button {
-    padding: 10px;
-    width: 250px;
-    margin-bottom: 20px;
-    border: 1px solid #ccc;
-    border-radius: 5px;
+nav ul li {
+    display: inline-block;
+    margin-right: 10px;
 }
 
-input[type="text"],
-input[type="password"] {
-    font-size: 1rem;
-}
-
-button, input[type="submit"] {
-    background-color: #007bff;
-    color: white;
-    cursor: pointer;
-    border: none;
-}
-
-button:hover,
-input[type="submit"]:hover {
-    background-color: #0056b3;
-}
-
-/* Links */
-a {
+nav ul li a {
     text-decoration: none;
     color: #007bff;
+    font-weight: bold;
 }
 
-a:hover {
-    color: #0056b3;
+nav ul li a:hover {
+    text-decoration: underline;
 }
 
-/* Navigation links */
-.nav-links ul {
-    list-style: none;
-    padding: 0;
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-}
-
-.nav-links ul li {
-    font-size: 1.2rem;
-    text-align: center;
-}
-
-/* Cards for notices and vacancies */
-.notice-list, .vacancy-list {
-    display: flex;
-    flex-wrap: wrap;
-    gap: 20px;
-    justify-content: space-around;
+main {
     margin-top: 20px;
-}
-
-.notice-card, .vacancy-card {
-    background-color: #fafafa;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 15px;
-    width: 100%;
-    max-width: 350px;
-    box-shadow: 0 0 5px rgba(0, 0, 0, 0.1);
-}
-
-.notice-card img,
-.vacancy-card img {
-    width: 100%;
-    height: auto;
-    border-radius: 5px;
-    margin-bottom: 15px;
-}
-
-.notice-card h2,
-.vacancy-card h2 {
-    font-size: 1.5rem;
-    margin-bottom: 10px;
-}
-
-.notice-card p,
-.vacancy-card p {
-    font-size: 1rem;
+    font-size: 16px;
     color: #555;
 }
 
-/* Login and Signup specific styles */
-.login-signup-form {
-    display: flex;
-    flex-direction: column;
-    gap: 15px;
-    justify-content: center;
-}
-
-.login-signup-form input[type="text"],
-.login-signup-form input[type="password"] {
-    width: 100%;
-    max-width: 350px;
-}
-
-.login-signup-form button {
-    width: 100%;
-    max-width: 350px;
-    background-color: #28a745;
-}
-
-/* Welcome page specific styles */
-.welcome-container {
-    display: flex;
-    flex-direction: column;
-    align-items: center;
-    gap: 20px;
-}
-
-/* Logout link */
-.logout-link {
-    display: block;
-    text-align: center;
+footer {
     margin-top: 20px;
-    font-size: 1.1rem;
-    font-weight: bold;
+    text-align: center;
+    font-size: 14px;
+    color: #888;
+}
+.Navbar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 28px 30px;
 }
 
-/* Responsiveness */
-@media screen and (max-width: 768px) {
-    .container {
-        width: 90%;
-    }
+.Navbar ul {
+    display: flex;
+    list-style: none;
+}
 
-    .nav-links ul {
+.Navbar ul li {
+    padding: 0 10px;
+}
+
+.Navbar ul li a {
+    text-decoration: none;
+    color: rgb(41, 41, 41);
+    transition: 1s;
+}
+.Navbar ul li a:hover {
+    text-decoration: underline;
+   
+}
+
+.Navbar button {
+    width: 124px;
+    height: 42px;
+    border: 1px solid #ccc;
+    border-radius: 5px;
+    padding: 14px 25px 14px 25px;
+    gap: 10px;
+    background: linear-gradient(#6675F7, #57007B);
+    color: white;
+    
+}
+
+/* New styles for the hamburger */
+.hamburger {
+    display: none; /* Hidden on larger screens */
+    flex-direction: column;
+    cursor: pointer;
+    gap: 5px;
+}
+
+.hamburger div {
+    width: 25px;
+    height: 3px;
+    background-color: rgb(41, 41, 41);
+    border-radius: 2px;
+}
+
+@media (max-width: 768px) {
+    .items {
+        display: none;
         flex-direction: column;
-        align-items: center;
+        background: white;
+        position: absolute;
+        top: 60px;
+        box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.2);
+        z-index: 1000;
+        width: 390px;
+        right: -26px;
     }
-
-    .notice-list, .vacancy-list {
+    .items ul{
+        display: flex;
         flex-direction: column;
     }
 
-    .notice-card, .vacancy-card {
-        width: 100%;
-        max-width: 100%;
+    .items.active {
+        display: flex;
+
+    }
+
+    .hamburger {
+        display: flex; /* Show hamburger icon */
+    }
+
+    .button-navbar {
+        display: none; /* Hide the button on mobile */
+    }
+    .Navbar ul li {
+        padding: 11px 10px;
     }
 }
