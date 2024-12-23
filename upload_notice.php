@@ -1,50 +1,35 @@
 <?php
+session_start();
 include 'db.php';
+
+if (!isset($_SESSION['user_id'])) {
+    echo "Please log in first.";
+    exit();
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = $_POST['title'];
     $description = $_POST['description'];
-    $image = $_FILES['image'];
+    $image_path = 'uploads/' . basename($_FILES['image']['name']);
 
-    if ($image['error'] === 0) {
-        $imageName = time() . '-' . basename($image['name']);
-        $targetDir = "uploads/";
-        $targetFile = $targetDir . $imageName;
+    // Move the uploaded image to the 'uploads' directory
+    if (move_uploaded_file($_FILES['image']['tmp_name'], $image_path)) {
+        $stmt = $conn->prepare("INSERT INTO notices (title, description, image_path) VALUES (?, ?, ?)");
+        $stmt->bind_param("sss", $title, $description, $image_path);
 
-        if (move_uploaded_file($image['tmp_name'], $targetFile)) {
-            if (isset($_POST['id']) && !empty($_POST['id'])) {
-                // Update existing notice
-                $id = $_POST['id'];
-                $stmt = $conn->prepare("UPDATE notices SET title=?, description=?, image_path=? WHERE id=?");
-                $stmt->bind_param("sssi", $title, $description, $targetFile, $id);
-                $stmt->execute();
-            } else {
-                // Insert new notice
-                $stmt = $conn->prepare("INSERT INTO notices (title, description, image_path) VALUES (?, ?, ?)");
-                $stmt->bind_param("sss", $title, $description, $targetFile);
-                $stmt->execute();
-            }
-
-            header("Location: notice.php");
-            exit();
+        if ($stmt->execute()) {
+            echo "Notice uploaded successfully!";
         } else {
-            echo "Error uploading the image.";
+            echo "Error: " . $stmt->error;
         }
+
+        $stmt->close();
     } else {
-        echo "No image uploaded or an error occurred.";
+        echo "Error uploading image.";
     }
 }
-
-if (isset($_GET['delete'])) {
-    $id = $_GET['delete'];
-    $stmt = $conn->prepare("DELETE FROM notices WHERE id=?");
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-
-    header("Location: notice.php");
-    exit();
-}
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -54,18 +39,20 @@ if (isset($_GET['delete'])) {
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="container">
-    <h1>Upload Notice</h1>
-    <form method="POST" enctype="multipart/form-data">
-        <input type="hidden" name="id" id="notice-id">
-        <label for="title">Title:</label>
-        <input type="text" name="title" id="title" required>
-        <label for="description">Description:</label>
-        <textarea name="description" id="description" rows="5" required></textarea>
-        <label for="image">Image:</label>
-        <input type="file" name="image" id="image" accept="image/*" required>
-        <button type="submit">Submit</button>
-    </form>
-</div>
+    <div class="container">
+        <h1>Upload Notice</h1>
+        <form method="POST" action="upload_notice.php" enctype="multipart/form-data">
+            <label for="title">Title:</label>
+            <input type="text" name="title" id="title" required>
+            <br><br>
+            <label for="description">Description:</label>
+            <textarea name="description" id="description" required></textarea>
+            <br><br>
+            <label for="image">Image:</label>
+            <input type="file" name="image" id="image" required>
+            <br><br>
+            <button type="submit">Upload Notice</button>
+        </form>
+    </div>
 </body>
 </html>

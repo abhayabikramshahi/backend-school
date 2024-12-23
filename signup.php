@@ -1,43 +1,39 @@
 <?php
-// Check if the form is submitted
+include 'db.php';
+
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
-    // Retrieve and sanitize user inputs
-    $username = trim($_POST['username']);
-    $password = trim($_POST['password']);
+    $username = $_POST['username'];
+    $password = password_hash($_POST['password'], PASSWORD_DEFAULT);
 
-    // Check if both fields are filled
-    if (empty($username) || empty($password)) {
-        echo "Please fill out both fields.";
+    // Check if the username already exists
+    $stmt = $conn->prepare("SELECT * FROM users WHERE username = ?");
+    $stmt->bind_param("s", $username);
+    $stmt->execute();
+    $result = $stmt->get_result();
+
+    if ($result->num_rows > 0) {
+        echo "Username already taken. Please choose another one.";
     } else {
-        // Hash the password for security
-        $hashedPassword = password_hash($password, PASSWORD_DEFAULT);
-
-        // Prepare the data to save to the PHP file
-        $data = "<?php\n";
-        $data .= "// User data\n";
-        $data .= "\$username = '" . addslashes($username) . "';\n";
-        $data .= "\$password = '" . addslashes($hashedPassword) . "';\n";
-        $data .= "?>\n";
-
-        // Save data to id_password.php
-        $filePath = 'id_password.php';
-
-        // Open the file and write the data (append mode)
-        if (file_put_contents($filePath, $data, FILE_APPEND)) {
+        // Insert new user into the database
+        $stmt = $conn->prepare("INSERT INTO users (username, password) VALUES (?, ?)");
+        $stmt->bind_param("ss", $username, $password);
+        if ($stmt->execute()) {
             echo "Signup successful! <a href='login.php'>Login here</a>";
         } else {
-            echo "Error: Unable to save data.";
+            echo "Error: " . $stmt->error;
         }
+        $stmt->close();
     }
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Signup</title>
-    <link rel="stylesheet" href="style.css"> <!-- Optional CSS for styling -->
+    <link rel="stylesheet" href="style.css">
 </head>
 <body>
     <div class="container">

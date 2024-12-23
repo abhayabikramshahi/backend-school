@@ -1,38 +1,35 @@
 <?php
+session_start();
 include 'db.php';
+
+if (!isset($_SESSION['user_id'])) {
+    echo "Please log in first.";
+    exit();
+}
 
 if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     $title = $_POST['title'];
-    $content = $_POST['content'];
+    $description = $_POST['description'];
+    $image_path = 'uploads/' . basename($_FILES['image']['name']);
 
-    if (isset($_POST['id']) && !empty($_POST['id'])) {
-        $id = $_POST['id'];
-        $stmt = $conn->prepare("UPDATE vacancies SET title=?, content=? WHERE id=?");
-        $stmt->bind_param("ssi", $title, $content, $id);
-        $stmt->execute();
+    // Move the uploaded image to the 'uploads' directory
+    if (move_uploaded_file($_FILES['image']['tmp_name'], $image_path)) {
+        $stmt = $conn->prepare("INSERT INTO vacancies (title, description, image_path) VALUES (?, ?, ?)");
+        $stmt->bind_param("sss", $title, $description, $image_path);
+
+        if ($stmt->execute()) {
+            echo "Vacancy uploaded successfully!";
+        } else {
+            echo "Error: " . $stmt->error;
+        }
+
+        $stmt->close();
     } else {
-        $stmt = $conn->prepare("INSERT INTO vacancies (title, content) VALUES (?, ?)");
-        $stmt->bind_param("ss", $title, $content);
-        $stmt->execute();
+        echo "Error uploading image.";
     }
-
-    header("Location: vacancy.php");
-    exit();
 }
-
-if (isset($_GET['delete'])) {
-    $id = $_GET['delete'];
-    $stmt = $conn->prepare("DELETE FROM vacancies WHERE id=?");
-    $stmt->bind_param("i", $id);
-    $stmt->execute();
-
-    header("Location: vacancy.php");
-    exit();
-}
-
-$result = $conn->query("SELECT * FROM vacancies ORDER BY created_at DESC");
-$vacancies = $result->fetch_all(MYSQLI_ASSOC);
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -42,35 +39,20 @@ $vacancies = $result->fetch_all(MYSQLI_ASSOC);
     <link rel="stylesheet" href="style.css">
 </head>
 <body>
-<div class="container">
-    <h1>Manage Vacancies</h1>
-    <form method="POST">
-        <input type="hidden" name="id" id="vacancy-id">
-        <label for="title">Title:</label>
-        <input type="text" name="title" id="title" required>
-        <label for="content">Content:</label>
-        <textarea name="content" id="content" rows="5" required></textarea>
-        <button type="submit">Submit</button>
-    </form>
-
-    <h2>Uploaded Vacancies</h2>
-    <ul>
-        <?php foreach ($vacancies as $index => $vacancy): ?>
-            <li>
-                <?php echo ($index + 1) . ". " . htmlspecialchars($vacancy['title']); ?>
-                <a href="javascript:void(0);" onclick="editVacancy(<?php echo htmlspecialchars(json_encode($vacancy)); ?>)">Edit</a>
-                <a href="?delete=<?php echo $vacancy['id']; ?>" onclick="return confirm('Are you sure?')">Delete</a>
-            </li>
-        <?php endforeach; ?>
-    </ul>
-</div>
-
-<script>
-function editVacancy(vacancy) {
-    document.getElementById('vacancy-id').value = vacancy.id;
-    document.getElementById('title').value = vacancy.title;
-    document.getElementById('content').value = vacancy.content;
-}
-</script>
+    <div class="container">
+        <h1>Upload Vacancy</h1>
+        <form method="POST" action="upload_vacancy.php" enctype="multipart/form-data">
+            <label for="title">Title:</label>
+            <input type="text" name="title" id="title" required>
+            <br><br>
+            <label for="description">Description:</label>
+            <textarea name="description" id="description" required></textarea>
+            <br><br>
+            <label for="image">Image:</label>
+            <input type="file" name="image" id="image" required>
+            <br><br>
+            <button type="submit">Upload Vacancy</button>
+        </form>
+    </div>
 </body>
 </html>

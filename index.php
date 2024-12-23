@@ -24,6 +24,13 @@ session_start();
                     <li><a href="login.php">Login</a></li>
                     <li><a href="signup.php">Sign Up</a></li>
                 <?php endif; ?>
+                <hr>
+
+                <li><a href="vacancy.php">Vacancy</a></li>
+                <li><a href="notice.php">Notice</a></li>
+              
+                <li><a href="upload_vacancy.php">Upload Vacancies</a></li>
+                <li><a href="upload_notice.php">Upload Notices</a></li>
             </ul>
         </nav>
         <main>
