@@ -39,21 +39,32 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Login</title>
-    <link rel="stylesheet" href="style.css">
+    <script src="https://cdn.tailwindcss.com"></script>
 </head>
-<body>
-    <div class="container">
-        <h1>Login</h1>
-        <form method="POST" action="login.php">
-            <label for="username">Username:</label>
-            <input type="text" name="username" id="username" required>
-            <br><br>
-            <label for="password">Password:</label>
-            <input type="password" name="password" id="password" required>
-            <br><br>
-            <button type="submit">Login</button>
+<body class="bg-gray-100 flex items-center justify-center min-h-screen">
+    <div class="w-full max-w-md bg-white p-8 rounded-lg shadow-md">
+        <h1 class="text-2xl font-bold text-blue-600 text-center mb-6">Login</h1>
+        <form method="POST" action="login.php" class="space-y-4">
+            <div>
+                <label for="username" class="block text-gray-700 font-medium">Username:</label>
+                <input type="text" name="username" id="username" 
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                       required>
+            </div>
+            <div>
+                <label for="password" class="block text-gray-700 font-medium">Password:</label>
+                <input type="password" name="password" id="password" 
+                       class="w-full px-4 py-2 border border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-blue-400" 
+                       required>
+            </div>
+            <button type="submit" 
+                    class="w-full bg-blue-600 text-white py-2 rounded-lg hover:bg-blue-700 transition duration-300">
+                Login
+            </button>
         </form>
-        <p>Don't have an account? <a href="signup.php">Signup here</a></p>
+        <p class="text-center text-gray-600 mt-4">Don't have an account? 
+            <a href="signup.php" class="text-blue-600 hover:underline">Signup here</a>
+        </p>
     </div>
 </body>
 </html>

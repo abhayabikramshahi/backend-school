@@ -40,26 +40,26 @@ $username = $_SESSION['username'];
             
             <!-- Dashboard Links -->
             <div class="mt-6 flex space-x-4">
-                <a href="welcome.php" class="px-6 py-2 bg-blue-600 text-white rounded-md shadow-md hover:bg-blue-700 transition duration-300">Dashboard</a>
-                <a href="index.php" class="px-6 py-2 bg-gray-300 text-gray-800 rounded-md shadow-md hover:bg-gray-400 transition duration-300">Go to Index</a>
+                <a href="index.php" class="px-6 py-2 bg-gray-300 text-gray-800 rounded-md shadow-md hover:bg-gray-400 transition duration-300">Home page</a>
             </div>
         </div>
 
-        <!-- User Info -->
+      
+
+        <!-- Notifications Section -->
         <div class="bg-white p-6 rounded-md shadow-md mt-6">
-            <h2 class="text-2xl font-semibold text-gray-800">Your Profile</h2>
-            <p class="mt-2 text-gray-600">Manage your personal information and settings here.</p>
+            <h2 class="text-2xl font-semibold text-gray-800">Notifications</h2>
+            <p class="mt-2 text-gray-600">Stay updated with the latest notices and announcements.</p>
 
-            <div class="mt-4 flex space-x-4">
-                <a href="edit_profile.php" class="px-6 py-2 bg-green-600 text-white rounded-md shadow-md hover:bg-green-700 transition duration-300">Edit Profile</a>
-                <a href="change_password.php" class="px-6 py-2 bg-yellow-600 text-white rounded-md shadow-md hover:bg-yellow-700 transition duration-300">Change Password</a>
+            <div class="mt-4">
+                <ul class="list-disc pl-6 space-y-2">
+                    <li><a href="view_notices.php" class="text-blue-500 hover:underline">View All Notices</a></li>
+                    <li><a href="view_vacancies.php" class="text-blue-500 hover:underline">Check Latest Vacancies</a></li>
+                </ul>
             </div>
         </div>
 
-        <!-- Footer -->
-        <footer class="bg-gray-800 text-white p-4 mt-10 text-center">
-            <p>&copy; 2024 Badimalika Secondary School. All rights reserved.</p>
-        </footer>
+       
     </div>
 </body>
 </html>
