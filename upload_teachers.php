@@ -15,18 +15,27 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST' && isset($_POST['teachers'])) {
 
             // Validate input to avoid empty entries
             if (!empty($name) && !empty($role) && !empty($email) && !empty($phonenumber)) {
-                if ($stmt = $conn->prepare("INSERT INTO teachers (name, role, email, phonenumber) VALUES (?, ?, ?, ?)")) {
-                    $stmt->bind_param("ssss", $name, $role, $email, $phonenumber);
-                    if (!$stmt->execute()) {
-                        $errorMessages[] = "Error inserting teacher at index $index: " . $stmt->error;
+                try {
+                    // Prepare the SQL statement
+                    $stmt = $pdo->prepare("INSERT INTO teachers (name, role, email, phonenumber) VALUES (?, ?, ?, ?)");
+                    
+                    // Execute the prepared statement with an array of parameters
+                    if ($stmt->execute([$name, $role, $email, $phonenumber])) {
+                        // Success message if insertion is successful
+                        echo "Teacher at index $index added successfully!";
+                    } else {
+                        // Error message if execution fails
+                        $errorMessages[] = "Error inserting teacher at index $index.";
                     }
-                    $stmt->close();
-                } else {
-                    $errorMessages[] = "Error preparing statement: " . $conn->error;
+                } catch (PDOException $e) {
+                    // Catch any database-related errors and add them to the error messages
+                    $errorMessages[] = "Database error for teacher at index $index: " . htmlspecialchars($e->getMessage());
                 }
             } else {
+                // Add an error message if any field is empty
                 $errorMessages[] = "Missing data for teacher at index $index. All fields are required.";
             }
+            
         }
 
         if (empty($errorMessages)) {

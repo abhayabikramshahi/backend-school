@@ -21,21 +21,24 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['vacancy_image'])) {
     } else {
         // Upload the image
         if (move_uploaded_file($_FILES['vacancy_image']['tmp_name'], $imagePath)) {
-            // Insert the vacancy into the database
-            $stmt = $conn->prepare("INSERT INTO vacancies (title, description, image_path) VALUES (?, ?, ?)");
-            $stmt->bind_param("sss", $title, $description, $imagePath);
-            if ($stmt->execute()) {
-                echo "<div class='text-green-500'>Vacancy uploaded successfully!</div>";
-            } else {
-                echo "<div class='text-red-500'>Error uploading vacancy: " . $stmt->error . "</div>";
+            try {
+                // Insert the vacancy into the database
+                $stmt = $pdo->prepare("INSERT INTO vacancies (title, description, image_path) VALUES (?, ?, ?)");
+                if ($stmt->execute([$title, $description, $imagePath])) {
+                    echo "<div class='text-green-500'>Vacancy uploaded successfully!</div>";
+                } else {
+                    echo "<div class='text-red-500'>Error uploading vacancy.</div>";
+                }
+            } catch (PDOException $e) {
+                echo "<div class='text-red-500'>Database error: " . htmlspecialchars($e->getMessage()) . "</div>";
             }
-            $stmt->close();
         } else {
             echo "<div class='text-red-500'>Error uploading image.</div>";
         }
     }
 }
 ?>
+
 
 <!DOCTYPE html>
 <html lang="en">

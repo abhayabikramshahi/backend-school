@@ -22,19 +22,22 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['notice_image'])) {
     
     // Check if image is uploaded successfully
     if (move_uploaded_file($_FILES['notice_image']['tmp_name'], $imagePath)) {
-        // Insert the notice into the database
-        $stmt = $conn->prepare("INSERT INTO notices (title, description, image_path) VALUES (?, ?, ?)");
-        $stmt->bind_param("sss", $title, $description, $imagePath);
-        
-        if ($stmt->execute()) {
-            echo "Notice uploaded successfully!";
-        } else {
-            echo "Error uploading notice: " . $stmt->error;
+        try {
+            // Insert the notice into the database using PDO
+            $stmt = $pdo->prepare("INSERT INTO notices (title, description, image_path) VALUES (?, ?, ?)");
+            if ($stmt->execute([$title, $description, $imagePath])) {
+                echo "Notice uploaded successfully!";
+            } else {
+                echo "Error uploading notice.";
+            }
+        } catch (PDOException $e) {
+            // Handle database errors
+            echo "Database error: " . $e->getMessage();
         }
-        $stmt->close();
     } else {
         echo "Error uploading image.";
     }
+    
 }
 ?>
 

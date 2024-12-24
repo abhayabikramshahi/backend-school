@@ -10,19 +10,23 @@ include 'db.php';
 // Delete vacancy
 if (isset($_GET['delete_id'])) {
     $deleteId = intval($_GET['delete_id']);
-    $stmt = $conn->prepare("DELETE FROM vacancies WHERE id = ?");
-    $stmt->bind_param("i", $deleteId);
-    if ($stmt->execute()) {
-        echo "<script>alert('Vacancy deleted successfully!'); window.location.href = 'manage_vacancy.php';</script>";
-    } else {
-        echo "Error deleting vacancy: " . $stmt->error;
+
+    try {
+        $stmt = $pdo->prepare("DELETE FROM vacancies WHERE id = ?");
+        if ($stmt->execute([$deleteId])) {
+            echo "<script>alert('Vacancy deleted successfully!'); window.location.href = 'manage_vacancy.php';</script>";
+        } else {
+            echo "Error deleting vacancy.";
+        }
+    } catch (PDOException $e) {
+        echo "Database error: " . htmlspecialchars($e->getMessage());
     }
-    $stmt->close();
 }
 
+
 // Fetch all vacancies
-$result = $conn->query("SELECT * FROM vacancies ORDER BY created_at DESC");
-$vacancies = $result->fetch_all(MYSQLI_ASSOC);
+$result = $pdo->query("SELECT * FROM vacancies ORDER BY created_at DESC");
+$vacancies = $result->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>

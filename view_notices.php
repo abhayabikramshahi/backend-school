@@ -2,15 +2,17 @@
 include 'db.php';
 
 // Fetch all notices
-$result = $conn->query("SELECT * FROM notices ORDER BY created_at DESC");
-$notices = $result->fetch_all(MYSQLI_ASSOC);
+$result = $pdo->query("SELECT * FROM notices ORDER BY created_at DESC");
+$notices = $result->fetchAll(PDO::FETCH_ASSOC);
 
-// Handle file download
+
+
+
 if (isset($_GET['download_id'])) {
     $downloadId = intval($_GET['download_id']);
 
     // Fetch the notice data
-    $stmt = $conn->prepare("SELECT * FROM notices WHERE id = ?");
+    $stmt = $pdo->prepare("SELECT * FROM notices WHERE id = ?");
     $stmt->bind_param("i", $downloadId);
     $stmt->execute();
     $result = $stmt->get_result();

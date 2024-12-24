@@ -7,48 +7,48 @@ if (!isset($_SESSION['user_id'])) {
 
 include 'db.php';
 
-// Debugging: Ensure connection works
-if ($conn->connect_error) {
-    die("Database connection failed: " . $conn->connect_error);
-}
-
 // Delete Notice
 if (isset($_GET['delete_id'])) {
     $deleteId = intval($_GET['delete_id']);
-    $stmt = $conn->prepare("DELETE FROM notices WHERE id = ?");
-    $stmt->bind_param("i", $deleteId);
-
-    if ($stmt->execute()) {
-        echo "Notice deleted successfully!";
-    } else {
-        echo "Error deleting notice: " . $stmt->error;
+    try {
+        $stmt = $pdo->prepare("DELETE FROM notices WHERE id = ?");
+        if ($stmt->execute([$deleteId])) {
+            echo "Notice deleted successfully!";
+        } else {
+            echo "Error deleting notice.";
+        }
+    } catch (PDOException $e) {
+        echo "Database error: " . $e->getMessage();
     }
-    $stmt->close();
 }
 
 // Bulk Delete Notices
 if (isset($_POST['delete_selected'])) {
     if (!empty($_POST['selected_notices'])) {
-        $deleteIds = implode(",", $_POST['selected_notices']);
-        $stmt = $conn->prepare("DELETE FROM notices WHERE id IN ($deleteIds)");
-
-        if ($stmt->execute()) {
-            echo "Selected notices deleted successfully!";
-        } else {
-            echo "Error deleting selected notices: " . $stmt->error;
+        $placeholders = implode(',', array_fill(0, count($_POST['selected_notices']), '?'));
+        try {
+            $stmt = $pdo->prepare("DELETE FROM notices WHERE id IN ($placeholders)");
+            if ($stmt->execute($_POST['selected_notices'])) {
+                echo "Selected notices deleted successfully!";
+            } else {
+                echo "Error deleting selected notices.";
+            }
+        } catch (PDOException $e) {
+            echo "Database error: " . $e->getMessage();
         }
-        $stmt->close();
     }
 }
 
 // Fetch All Notices
-$result = $conn->query("SELECT * FROM notices ORDER BY created_at DESC");
-if ($result->num_rows > 0) {
-    $notices = $result->fetch_all(MYSQLI_ASSOC);
-} else {
+try {
+    $stmt = $pdo->query("SELECT * FROM notices ORDER BY created_at DESC");
+    $notices = $stmt->fetchAll(PDO::FETCH_ASSOC);
+} catch (PDOException $e) {
+    echo "Database error: " . $e->getMessage();
     $notices = [];
 }
 ?>
+
 <!DOCTYPE html>
 <html lang="en">
 <head>

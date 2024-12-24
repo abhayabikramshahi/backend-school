@@ -2,8 +2,8 @@
 include 'db.php';
 
 // Fetch all vacancies
-$result = $conn->query("SELECT * FROM vacancies ORDER BY created_at DESC");
-$vacancies = $result->fetch_all(MYSQLI_ASSOC);
+$result = $pdo->query("SELECT * FROM vacancies ORDER BY created_at DESC");
+$vacancies = $result->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>

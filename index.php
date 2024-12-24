@@ -102,13 +102,21 @@ session_start();
                 <p class="text-gray-600 mt-2">View the list of students.</p>
             </a>
             </a>
-            <a href="upload_students.php" class="block bg-blue-100 p-4 rounded-lg shadow hover:shadow-md hover:bg-blue-200 transition duration-300">
+            <a href="manage_student.php" class="block bg-blue-100 p-4 rounded-lg shadow hover:shadow-md hover:bg-blue-200 transition duration-300">
                 <h2 class="text-blue-600 font-bold text-xl">Add Students</h2>
                 <p class="text-gray-600 mt-2">Publish the list of students.</p>
             </a>
             <a href="upload_teachers.php" class="block bg-blue-100 p-4 rounded-lg shadow hover:shadow-md hover:bg-blue-200 transition duration-300">
                 <h2 class="text-blue-600 font-bold text-xl">Add Teachers</h2>
                 <p class="text-gray-600 mt-2">Publish the list of teachers.</p>
+            </a>
+            <a href="manage_student.php" class="block bg-blue-100 p-4 rounded-lg shadow hover:shadow-md hover:bg-blue-200 transition duration-300">
+                <h2 class="text-blue-600 font-bold text-xl">Manage Students</h2>
+                <p class="text-gray-600 mt-2">Acess the page for manage students.</p>
+            </a>
+            <a href="manage_teachers.php" class="block bg-blue-100 p-4 rounded-lg shadow hover:shadow-md hover:bg-blue-200 transition duration-300">
+                <h2 class="text-blue-600 font-bold text-xl">Manage Teachers</h2>
+                <p class="text-gray-600 mt-2">Acess the page for manage teachers.</p>
             </a>
         <?php else: ?>
             <a href="login.php" class="block bg-blue-100 p-4 rounded-lg shadow hover:shadow-md hover:bg-blue-200 transition duration-300">
