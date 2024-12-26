@@ -35,6 +35,7 @@ $vacancies = $result->fetchAll(PDO::FETCH_ASSOC);
     <meta charset="UTF-8">
     <title>Manage Vacancies</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="shortcut icon" href="https://badimalikasecschool.netlify.app/471f74d9-7a7c-4024-82b7-251a5aba58a3.jpg" type="image/x-icon">
 </head>
 <body class="bg-gray-100 font-sans leading-normal tracking-normal">
     <div class="max-w-4xl mx-auto py-6 px-4">

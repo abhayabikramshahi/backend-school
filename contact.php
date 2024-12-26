@@ -38,6 +38,7 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <title>Contact Us</title>
     <link rel="stylesheet" href="https://cdn.tailwindcss.com">
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body class="bg-gray-100">
     <div class="container mx-auto p-6 bg-white rounded-lg shadow-md mt-6">

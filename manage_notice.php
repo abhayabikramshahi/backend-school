@@ -56,6 +56,7 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Notices</title>
     <script src="https://cdn.tailwindcss.com"></script>
+    <link rel="shortcut icon" href="https://badimalikasecschool.netlify.app/471f74d9-7a7c-4024-82b7-251a5aba58a3.jpg" type="image/x-icon">
 </head>
 <body class="bg-gray-100">
     <div class="container mx-auto p-6 bg-white rounded-lg shadow-md mt-6">

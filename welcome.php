@@ -42,24 +42,11 @@ $username = $_SESSION['username'];
             <div class="mt-6 flex space-x-4">
                 <a href="index.php" class="px-6 py-2 bg-gray-300 text-gray-800 rounded-md shadow-md hover:bg-gray-400 transition duration-300">Home page</a>
             </div>
+           
         </div>
 
       
 
-        <!-- Notifications Section -->
-        <div class="bg-white p-6 rounded-md shadow-md mt-6">
-            <h2 class="text-2xl font-semibold text-gray-800">Notifications</h2>
-            <p class="mt-2 text-gray-600">Stay updated with the latest notices and announcements.</p>
-
-            <div class="mt-4">
-                <ul class="list-disc pl-6 space-y-2">
-                    <li><a href="view_notices.php" class="text-blue-500 hover:underline">View All Notices</a></li>
-                    <li><a href="view_vacancies.php" class="text-blue-500 hover:underline">Check Latest Vacancies</a></li>
-                </ul>
-            </div>
-        </div>
-
-       
-    </div>
+        
 </body>
 </html>

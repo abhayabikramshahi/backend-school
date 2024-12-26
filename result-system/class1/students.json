@@ -1,0 +1,24 @@
+[
+    {
+        "roll_number": 101,
+        "name": "John Doe",
+        "marks": {
+            "math": 85,
+            "science": 78,
+            "english": 92
+        },
+        "total_marks": 255,
+        "grade": "A"
+    },
+    {
+        "roll_number": 102,
+        "name": "Jane Smith",
+        "marks": {
+            "math": 70,
+            "science": 65,
+            "english": 75
+        },
+        "total_marks": 210,
+        "grade": "B"
+    }
+]
