@@ -1,30 +1,20 @@
 <?php
-$host = 'localhost';      // Database host (usually localhost)
-$dbname = 'look';       // Database name
-$username = 'root';       // Database username
-$password = '';           // Database password (default is empty for XAMPP)
+$host = 'localhost';
+$db = 'school';
+$user = 'root';
+$pass = '';
+$charset = 'utf8mb4';
+
+$dsn = "mysql:host=$host;dbname=$db;charset=$charset";
+$options = [
+    PDO::ATTR_ERRMODE            => PDO::ERRMODE_EXCEPTION,
+    PDO::ATTR_DEFAULT_FETCH_MODE => PDO::FETCH_ASSOC,
+    PDO::ATTR_EMULATE_PREPARES   => false,
+];
 
 try {
-    $pdo = new PDO("mysql:host=$host;dbname=$dbname", $username, $password);
-    $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION); // For error handling
+    $pdo = new PDO($dsn, $user, $pass, $options);
 } catch (PDOException $e) {
-    die("Database connection failed: " . $e->getMessage());
+    die('Database connection failed: ' . $e->getMessage());
 }
-        // Database password (default is empty for XAMPP)
-
-// Create a MySQLi connection
-$conn = new mysqli($host, $username, $password, $dbname);
-
-// Check the connection
-if ($conn->connect_error) {
-    die("Database connection failed: " . $conn->connect_error);
-}
-
-// Set the character set (optional, but recommended for compatibility)
-$conn->set_charset("utf8");
-
-// If successful
-
 ?>
-
-

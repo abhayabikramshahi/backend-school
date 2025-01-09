@@ -1,8 +1,7 @@
 <?php
 session_start();
-
-// Destroy the session to log out
+session_unset();
 session_destroy();
-header("Location: login.php");
-exit();
+header('Location: login.php');
+exit;
 ?>
