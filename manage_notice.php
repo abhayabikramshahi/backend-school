@@ -1,52 +1,29 @@
 <?php
-session_start();
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
+// Database connection
+$pdo = new PDO("mysql:host=localhost;dbname=look", "root", "");
+
+// Handle delete request
+if (isset($_GET['delete_id'])) {
+    $deleteId = (int)$_GET['delete_id'];
+
+    // Delete image file if it exists
+    $stmt = $pdo->prepare("SELECT image_path FROM notices WHERE id = ?");
+    $stmt->execute([$deleteId]);
+    $notice = $stmt->fetch(PDO::FETCH_ASSOC);
+    if ($notice && !empty($notice['image_path']) && file_exists($notice['image_path'])) {
+        unlink($notice['image_path']);
+    }
+
+    // Delete record
+    $stmt = $pdo->prepare("DELETE FROM notices WHERE id = ?");
+    $stmt->execute([$deleteId]);
+    header("Location: manage_notices.php");
     exit();
 }
 
-include 'db.php';
-
-// Delete Notice
-if (isset($_GET['delete_id'])) {
-    $deleteId = intval($_GET['delete_id']);
-    try {
-        $stmt = $pdo->prepare("DELETE FROM notices WHERE id = ?");
-        if ($stmt->execute([$deleteId])) {
-            echo "Notice deleted successfully!";
-        } else {
-            echo "Error deleting notice.";
-        }
-    } catch (PDOException $e) {
-        echo "Database error: " . $e->getMessage();
-    }
-}
-
-// Bulk Delete Notices
-if (isset($_POST['delete_selected'])) {
-    if (!empty($_POST['selected_notices'])) {
-        $placeholders = implode(',', array_fill(0, count($_POST['selected_notices']), '?'));
-        try {
-            $stmt = $pdo->prepare("DELETE FROM notices WHERE id IN ($placeholders)");
-            if ($stmt->execute($_POST['selected_notices'])) {
-                echo "Selected notices deleted successfully!";
-            } else {
-                echo "Error deleting selected notices.";
-            }
-        } catch (PDOException $e) {
-            echo "Database error: " . $e->getMessage();
-        }
-    }
-}
-
-// Fetch All Notices
-try {
-    $stmt = $pdo->query("SELECT * FROM notices ORDER BY created_at DESC");
-    $notices = $stmt->fetchAll(PDO::FETCH_ASSOC);
-} catch (PDOException $e) {
-    echo "Database error: " . $e->getMessage();
-    $notices = [];
-}
+// Fetch notices
+$stmt = $pdo->query("SELECT * FROM notices ORDER BY created_at DESC");
+$notices = $stmt->fetchAll(PDO::FETCH_ASSOC);
 ?>
 
 <!DOCTYPE html>
@@ -56,65 +33,62 @@ try {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Manage Notices</title>
     <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="shortcut icon" href="https://badimalikasecschool.netlify.app/471f74d9-7a7c-4024-82b7-251a5aba58a3.jpg" type="image/x-icon">
 </head>
-<body class="bg-gray-100">
-    <div class="container mx-auto p-6 bg-white rounded-lg shadow-md mt-6">
-        <h1 class="text-2xl font-bold text-blue-600">Manage Notices</h1>
+<body class="bg-gray-100 font-sans">
 
-        <?php if (count($notices) > 0): ?>
-            <form action="manage_notice.php" method="POST">
-                <div class="mb-4">
-                    <input type="checkbox" id="select-all" class="form-checkbox h-5 w-5 text-blue-500"> 
-                    <label for="select-all" class="text-sm text-gray-600">Select All</label>
-                    <button type="submit" name="delete_selected" class="ml-4 bg-red-600 text-white px-4 py-2 rounded-md hover:bg-red-700">Delete Selected</button>
-                </div>
-                <table class="min-w-full table-auto">
-                    <thead>
-                        <tr>
-                            <th class="px-4 py-2 border-b text-left">#</th>
-                            <th class="px-4 py-2 border-b text-left">Title</th>
-                            <th class="px-4 py-2 border-b text-left">Description</th>
-                            <th class="px-4 py-2 border-b text-left">Image</th>
-                            <th class="px-4 py-2 border-b text-left">Actions</th>
-                            <th class="px-4 py-2 border-b text-left">Select</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <?php foreach ($notices as $index => $notice): ?>
-                            <tr>
-                                <td class="px-4 py-2 border-b"><?php echo $index + 1; ?></td>
-                                <td class="px-4 py-2 border-b"><?php echo htmlspecialchars($notice['title']); ?></td>
-                                <td class="px-4 py-2 border-b"><?php echo htmlspecialchars($notice['description']); ?></td>
-                                <td class="px-4 py-2 border-b">
-                                    <img src="<?php echo htmlspecialchars($notice['image_path']); ?>" alt="Notice Image" class="w-20">
-                                </td>
-                                <td class="px-4 py-2 border-b">
-                                    <a href="edit_notice.php?id=<?php echo $notice['id']; ?>" class="text-blue-500 hover:underline">Edit</a> |
-                                    <a href="manage_notice.php?delete_id=<?php echo $notice['id']; ?>" onclick="return confirm('Are you sure?')" class="text-red-500 hover:underline">Delete</a>
-                                </td>
-                                <td class="px-4 py-2 border-b">
-                                    <input type="checkbox" name="selected_notices[]" value="<?php echo $notice['id']; ?>" class="form-checkbox h-5 w-5 text-blue-500">
-                                </td>
-                            </tr>
-                        <?php endforeach; ?>
-                    </tbody>
-                </table>
-            </form>
-        <?php else: ?>
-            <p class="text-center text-gray-600 mt-6">No notices found.</p>
-        <?php endif; ?>
-        <p class="mt-4 text-center"><a href="index.php" class="text-blue-500 hover:underline">Go back</a></p>
+<!-- Navbar -->
+<nav class="bg-blue-600 p-4 text-white">
+    <div class="container mx-auto flex justify-between items-center">
+        <h1 class="text-lg font-bold">Manage Notices</h1>
+        <a href="index.php" class="bg-white text-blue-600 px-4 py-2 rounded hover:bg-gray-200 transition">
+            Back to Home
+        </a>
     </div>
+</nav>
 
-    <script>
-        // Select All functionality
-        document.getElementById('select-all').addEventListener('change', function () {
-            const checkboxes = document.querySelectorAll('input[name="selected_notices[]"]');
-            checkboxes.forEach(checkbox => {
-                checkbox.checked = this.checked;
-            });
-        });
-    </script>
+<!-- Manage Notices Section -->
+<div class="container mx-auto p-6 bg-white shadow-md rounded-md mt-6">
+    <h1 class="text-3xl font-bold text-blue-600 mb-6 text-center">Manage Notices</h1>
+
+    <?php if (!empty($notices)): ?>
+        <div class="overflow-x-auto">
+            <table class="table-auto w-full border-collapse bg-gray-50 rounded-lg shadow">
+                <thead>
+                    <tr class="bg-blue-500 text-white">
+                        <th class="border px-4 py-2">ID</th>
+                        <th class="border px-4 py-2">Title</th>
+                        <th class="border px-4 py-2">Image</th>
+                        <th class="border px-4 py-2">Actions</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <?php foreach ($notices as $notice): ?>
+                        <tr class="hover:bg-gray-100">
+                            <td class="border px-4 py-2 text-center"><?php echo $notice['id']; ?></td>
+                            <td class="border px-4 py-2"><?php echo htmlspecialchars($notice['title']); ?></td>
+                            <td class="border px-4 py-2 text-center">
+                                <?php if (!empty($notice['image_path'])): ?>
+                                    <img src="<?php echo htmlspecialchars($notice['image_path']); ?>" alt="Notice Image" class="w-16 h-16 object-cover rounded shadow">
+                                <?php else: ?>
+                                    <span class="text-gray-500">N/A</span>
+                                <?php endif; ?>
+                            </td>
+                            <td class="border px-4 py-2 text-center">
+                            <a href="delete_notice.php?delete_id=<?php echo $notice['id']; ?>" 
+   onclick="return confirm('Are you sure you want to delete this notice?');" 
+   class="inline-block px-4 py-2 bg-red-500 text-white rounded shadow hover:bg-red-600 transition">
+    Delete
+</a>
+                            </td>
+                        </tr>
+                    <?php endforeach; ?>
+                </tbody>
+            </table>
+        </div>
+    <?php else: ?>
+        <p class="text-gray-700 text-center mt-6">No notices available to manage.</p>
+    <?php endif; ?>
+</div>
+
 </body>
 </html>

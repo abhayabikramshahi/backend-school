@@ -1,40 +1,26 @@
 <?php
-session_start();
-include 'db.php';
+// Database connection
+$pdo = new PDO("mysql:host=localhost;dbname=look", "root", "");
 
-if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['notice_image'])) {
-    $title = $_POST['title'];
-    $description = $_POST['description'];
-    $file = $_FILES['notice_image'];
+// Handle form submission
+if ($_SERVER["REQUEST_METHOD"] === "POST") {
+    $title = htmlspecialchars($_POST['title']);
+    $description = htmlspecialchars($_POST['description']);
 
-    // Validate inputs
-    if (empty($title) || empty($description) || empty($file['name'])) {
-        echo "All fields are required!";
-        exit();
-    }
-
-    // Validate file type and size
-    $allowedTypes = ['image/jpeg', 'image/png', 'image/gif'];
-    if (!in_array($file['type'], $allowedTypes) || $file['size'] > 2 * 1024 * 1024) {
-        echo "Invalid file type or size exceeds 2MB.";
-        exit();
-    }
-
-    // Save the file
-    $uploadDir = 'uploads/';
-    $imagePath = $uploadDir . time() . '_' . basename($file['name']);
-    if (!move_uploaded_file($file['tmp_name'], $imagePath)) {
-        echo "Error uploading the file.";
-        exit();
+    // Handle image upload
+    $imagePath = null;
+    if (!empty($_FILES['image']['name'])) {
+        $targetDir = "uploads/";
+        $imagePath = $targetDir . basename($_FILES['image']['name']);
+        move_uploaded_file($_FILES['image']['tmp_name'], $imagePath);
     }
 
     // Insert into database
     $stmt = $pdo->prepare("INSERT INTO notices (title, description, image_path) VALUES (?, ?, ?)");
     if ($stmt->execute([$title, $description, $imagePath])) {
-        header("Location: view_notices.php?message=Notice uploaded successfully!");
-        exit();
+        $success_message = "Notice uploaded successfully.";
     } else {
-        echo "Error uploading notice.";
+        $error_message = "Failed to upload notice.";
     }
 }
 ?>
@@ -45,23 +31,61 @@ if ($_SERVER['REQUEST_METHOD'] == 'POST' && isset($_FILES['notice_image'])) {
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Upload Notice</title>
+    <script src="https://cdn.tailwindcss.com"></script>
     <style>
-        body { font-family: Arial, sans-serif; background: #f4f4f4; padding: 20px; }
-        .container { max-width: 600px; margin: auto; background: #fff; padding: 20px; border-radius: 8px; box-shadow: 0 2px 8px rgba(0,0,0,0.1); }
-        input, textarea, button { width: 100%; margin: 10px 0; padding: 10px; border: 1px solid #ddd; border-radius: 5px; }
-        button { background: #4CAF50; color: white; cursor: pointer; }
-        button:hover { background: #45a049; }
+        body {
+            font-family: 'Poppins', sans-serif;
+        }
+        .container {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+        .input, .textarea, .button {
+            transition: all 0.3s ease;
+        }
+        .input:focus, .textarea:focus {
+            border-color: #4C51BF;
+            outline: none;
+        }
+        .button:hover {
+            background-color: #4C51BF;
+        }
     </style>
 </head>
-<body>
-    <div class="container">
-        <h1>Upload Notice</h1>
+<body class="bg-gray-100">
+
+    <div class="container p-8 bg-white shadow-lg rounded-lg mt-10">
+        <h1 class="text-3xl font-bold text-indigo-600 mb-6 text-center">Upload Notice</h1>
+
+        <?php if (isset($success_message)): ?>
+            <div class="bg-green-500 text-white p-4 mb-6 rounded-lg shadow-md">
+                <?php echo $success_message; ?>
+            </div>
+        <?php elseif (isset($error_message)): ?>
+            <div class="bg-red-500 text-white p-4 mb-6 rounded-lg shadow-md">
+                <?php echo $error_message; ?>
+            </div>
+        <?php endif; ?>
+
         <form method="POST" enctype="multipart/form-data">
-            <input type="text" name="title" placeholder="Title" required>
-            <textarea name="description" placeholder="Description" required></textarea>
-            <input type="file" name="notice_image" accept="image/*" required>
-            <button type="submit">Upload</button>
+            <div class="mb-6">
+                <label for="title" class="block text-lg font-semibold text-gray-700">Title</label>
+                <input type="text" id="title" name="title" class="input w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500" required>
+            </div>
+
+            <div class="mb-6">
+                <label for="description" class="block text-lg font-semibold text-gray-700">Description</label>
+                <textarea id="description" name="description" class="textarea w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500" rows="6" required></textarea>
+            </div>
+
+            <div class="mb-6">
+                <label for="image" class="block text-lg font-semibold text-gray-700">Image</label>
+                <input type="file" id="image" name="image" class="input w-full p-4 border border-gray-300 rounded-md focus:ring-2 focus:ring-indigo-500">
+            </div>
+
+            <button type="submit" class="button w-full p-4 bg-indigo-600 text-white rounded-md shadow-md hover:bg-indigo-700 focus:ring-2 focus:ring-indigo-500">Upload Notice</button>
         </form>
     </div>
+
 </body>
 </html>

@@ -4,8 +4,8 @@ include 'db.php'; // Include database connection
 // Handle delete request
 if (isset($_GET['delete_id'])) {
     $deleteId = (int)$_GET['delete_id'];
-    $stmt = $conn->prepare("DELETE FROM teachers WHERE id = ?");
-    $stmt->bind_param("i", $deleteId);
+    $stmt = $pdo->prepare("DELETE FROM teachers WHERE id = :id");
+    $stmt->bindParam(':id', $deleteId, PDO::PARAM_INT);
     $stmt->execute();
     header("Location: manage_teachers.php");
     exit();
@@ -14,11 +14,25 @@ if (isset($_GET['delete_id'])) {
 // Fetch teachers with optional search
 $searchQuery = '';
 if (isset($_GET['search']) && !empty($_GET['search'])) {
-    $searchTerm = $conn->real_escape_string($_GET['search']);
-    $searchQuery = "WHERE name LIKE '%$searchTerm%' OR role LIKE '%$searchTerm%' OR email LIKE '%$searchTerm%' OR phonenumber LIKE '%$searchTerm%'";
+    $searchTerm = '%' . $_GET['search'] . '%'; // Add wildcards for LIKE query
+    $searchQuery = "WHERE name LIKE :searchTerm OR role LIKE :searchTerm OR email LIKE :searchTerm OR phonenumber LIKE :searchTerm";
 }
 
-$result = $conn->query("SELECT * FROM teachers $searchQuery ORDER BY id ASC");
+// Prepare the query
+$query = "SELECT * FROM teachers $searchQuery ORDER BY id ASC";
+$stmt = $pdo->prepare($query);
+
+// Bind the search term if available
+if (!empty($searchQuery)) {
+    $stmt->bindParam(':searchTerm', $searchTerm, PDO::PARAM_STR);
+}
+
+// Execute the query
+$stmt->execute();
+
+// Fetch the results
+$teachers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
 ?>
 
 <!DOCTYPE html>
@@ -50,7 +64,7 @@ $result = $conn->query("SELECT * FROM teachers $searchQuery ORDER BY id ASC");
         </form>
 
         <!-- Teachers Table -->
-        <?php if ($result->num_rows > 0): ?>
+        <?php if (count($teachers) > 0): ?>
             <table class="table-auto w-full bg-white shadow-md rounded-md border-collapse">
                 <thead>
                     <tr class="bg-gray-200 text-gray-700">
@@ -63,7 +77,7 @@ $result = $conn->query("SELECT * FROM teachers $searchQuery ORDER BY id ASC");
                     </tr>
                 </thead>
                 <tbody>
-                    <?php while ($row = $result->fetch_assoc()): ?>
+                    <?php foreach ($teachers as $row): ?>
                         <tr class="hover:bg-gray-100">
                             <td class="border px-4 py-2 text-center"><?php echo htmlspecialchars($row['id']); ?></td>
                             <td class="border px-4 py-2"><?php echo htmlspecialchars($row['name']); ?></td>
@@ -75,7 +89,7 @@ $result = $conn->query("SELECT * FROM teachers $searchQuery ORDER BY id ASC");
                                 <a href="?delete_id=<?php echo $row['id']; ?>" onclick="return confirm('Are you sure you want to delete this teacher?');" class="text-red-500 hover:underline">Delete</a>
                             </td>
                         </tr>
-                    <?php endwhile; ?>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         <?php else: ?>

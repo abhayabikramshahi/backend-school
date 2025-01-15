@@ -1,0 +1,86 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Responsive Dashboard</title>
+    <!-- Add Tailwind CSS via CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        // Toggle sidebar visibility
+        function toggleSidebar() {
+            const sidebar = document.getElementById('sidebar');
+            sidebar.classList.toggle('hidden');
+        }
+    </script>
+</head>
+<body class="bg-gray-100 font-sans">
+    <!-- Header with Hamburger -->
+    <header class="bg-white shadow-md p-4 flex items-center justify-between">
+        <button
+            class="text-gray-700 hover:text-blue-600 focus:outline-none lg:hidden"
+            onclick="toggleSidebar()"
+        >
+            <!-- Hamburger Icon -->
+            <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke="currentColor" class="w-6 h-6">
+                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16" />
+            </svg>
+        </button>
+        <h1 class="text-xl font-bold text-gray-800">Dashboard</h1>
+    </header>
+
+    <!-- Sidebar -->
+    <div id="sidebar" class="bg-white shadow-md h-screen p-5 w-64 fixed lg:static hidden lg:block">
+        <!-- Navbar Section -->
+        <div class="navbar mb-8">
+            <h1 class="text-2xl font-bold text-gray-800 mb-2">Dashboard</h1>
+            <p class="text-gray-600 mb-1">This is Dashboard page for teachers.</p>
+            <p class="text-gray-600">Uploading links are here</p>
+        </div>
+
+        <!-- Upload Section -->
+        <div class="nav-items mb-8">
+            <h2 class="text-lg font-semibold text-gray-700 mb-2">Uploading Section</h2>
+            <ul class="space-y-2">
+                <li><a href="#" class="block text-gray-700 hover:text-blue-600">Upload Teacher</a></li>
+                <li><a href="#" class="block text-gray-700 hover:text-blue-600">Upload Students</a></li>
+                <li><a href="#" class="block text-gray-700 hover:text-blue-600">Upload Result</a></li>
+                <li><a href="#" class="block text-gray-700 hover:text-blue-600">Upload Notices</a></li>
+                <li><a href="#" class="block text-gray-700 hover:text-blue-600">Upload Vacancy</a></li>
+            </ul>
+        </div>
+
+        <!-- Editing Section -->
+        <div class="sec-2 mb-8">
+            <h2 class="text-lg font-semibold text-gray-700 mb-2">Editing Section</h2>
+            <ul class="space-y-2">
+                <li><a href="#" class="block text-gray-700 hover:text-blue-600">Edit Teachers</a></li>
+                <li><a href="#" class="block text-gray-700 hover:text-blue-600">Edit Students</a></li>
+                <li><a href="#" class="block text-gray-700 hover:text-blue-600">Edit Result</a></li>
+                <li><a href="#" class="block text-gray-700 hover:text-blue-600">Edit Notices</a></li>
+                <li><a href="#" class="block text-gray-700 hover:text-blue-600">Edit Vacancy</a></li>
+            </ul>
+        </div>
+
+        <!-- Managing Section -->
+        <div class="sec-3">
+            <h2 class="text-lg font-semibold text-gray-700 mb-2">Managing Section</h2>
+            <ul class="space-y-2">
+                <li><a href="#" class="block text-gray-700 hover:text-blue-600">Manage Teachers</a></li>
+                <li><a href="#" class="block text-gray-700 hover:text-blue-600">Manage Students</a></li>
+                <li><a href="#" class="block text-gray-700 hover:text-blue-600">Manage Result</a></li>
+                <li><a href="#" class="block text-gray-700 hover:text-blue-600">Manage Notices</a></li>
+                <li><a href="#" class="block text-gray-700 hover:text-blue-600">Manage Vacancy</a></li>
+            </ul>
+        </div>
+    </div>
+
+    <!-- Main Content -->
+    <main class="ml-0 lg:ml-64 p-6">
+        <div class="bg-white rounded-lg shadow-md p-6">
+            <h2 class="text-2xl font-semibold text-gray-800">Welcome to the Dashboard</h2>
+            <p class="text-gray-600 mt-2">Here you can manage all the activities easily and efficiently.</p>
+        </div>
+    </main>
+</body>
+</html>

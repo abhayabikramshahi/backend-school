@@ -1,4 +1,13 @@
 <?php
+// Include the PHPMailer files
+require 'PHPMailer/PHPMailer.php';
+require 'PHPMailer/SMTP.php';
+require 'PHPMailer/Exception.php';
+
+use PHPMailer\PHPMailer\PHPMailer;
+use PHPMailer\PHPMailer\Exception;
+
+// Check if the form is submitted
 if ($_SERVER["REQUEST_METHOD"] == "POST") {
     // Collect form data
     $name = htmlspecialchars($_POST['name']);
@@ -6,30 +15,59 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     $address = htmlspecialchars($_POST['address']);
     $email_or_phone = htmlspecialchars($_POST['email_or_phone']);
     $message = htmlspecialchars($_POST['message']);
-    
-    // Email settings
-    $to = "abhayabikramshahiofficial@gmail.com";
-    $subject = "Contact Us Form Submission";
-    $body = "
-    Name: $name\n
-    Age: $age\n
-    Address: $address\n
-    Email or Phone: $email_or_phone\n
-    Message: $message\n
-    ";
-    
-    // Headers for the email
-    $headers = "From: no-reply@yourdomain.com" . "\r\n" . "Reply-To: $email_or_phone" . "\r\n" . "Content-Type: text/plain; charset=UTF-8";
 
-    // Send email
-    if (mail($to, $subject, $body, $headers)) {
-        $success_message = "Thank you for contacting us. We will get back to you soon.";
-    } else {
-        $error_message = "There was an error submitting the form. Please try again later.";
+    // Database connection (PDO)
+    try {
+        $pdo = new PDO("mysql:host=localhost;dbname=your_database_name", "your_db_username", "your_db_password");
+        $pdo->setAttribute(PDO::ATTR_ERRMODE, PDO::ERRMODE_EXCEPTION);
+        
+        // Insert form data into the database
+        $stmt = $pdo->prepare("INSERT INTO contact_form (name, age, address, email_or_phone, message) VALUES (?, ?, ?, ?, ?)");
+        $stmt->execute([$name, $age, $address, $email_or_phone, $message]);
+
+        // Send email using PHPMailer
+        $mail = new PHPMailer(true);
+        try {
+            // Server settings
+            $mail->isSMTP();
+            $mail->Host = 'smtp.gmail.com';
+            $mail->SMTPAuth = true;
+            $mail->Username = 'your_email@gmail.com'; // Your Gmail address
+            $mail->Password = 'your_email_password'; // Your Gmail app password (generate it from Google account settings)
+            $mail->SMTPSecure = PHPMailer::ENCRYPTION_STARTTLS;
+            $mail->Port = 587; // SMTP port for Gmail
+
+            // Recipients
+            $mail->setFrom('your_email@gmail.com', 'Your Name or Organization');
+            $mail->addAddress('abhayabikramshahiofficial@gmail.com'); // Recipient's email address
+
+            // Content
+            $mail->isHTML(false);
+            $mail->Subject = 'Contact Us Form Submission';
+            $mail->Body    = "
+                Name: $name\n
+                Age: $age\n
+                Address: $address\n
+                Email or Phone: $email_or_phone\n
+                Message: $message\n
+            ";
+
+            // Send email
+            if ($mail->send()) {
+                echo "Thank you for contacting us. We will get back to you soon.";
+            } else {
+                echo "There was an error sending your message.";
+            }
+        } catch (Exception $e) {
+            echo "Error: " . $mail->ErrorInfo;
+        }
+    } catch (PDOException $e) {
+        echo "Database error: " . $e->getMessage();
     }
 }
 ?>
 
+<!-- HTML Form -->
 <!DOCTYPE html>
 <html lang="en">
 <head>
@@ -37,22 +75,10 @@ if ($_SERVER["REQUEST_METHOD"] == "POST") {
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Contact Us</title>
     <link rel="stylesheet" href="https://cdn.tailwindcss.com">
-    <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="shortcut icon" href="favicon.ico" type="image/x-icon">
 </head>
 <body class="bg-gray-100">
     <div class="container mx-auto p-6 bg-white rounded-lg shadow-md mt-6">
         <h1 class="text-2xl font-bold text-center text-blue-600 mb-6">Contact Us</h1>
-
-        <?php if (isset($success_message)): ?>
-            <div class="bg-green-500 text-white p-4 mb-4 rounded">
-                <?php echo $success_message; ?>
-            </div>
-        <?php elseif (isset($error_message)): ?>
-            <div class="bg-red-500 text-white p-4 mb-4 rounded">
-                <?php echo $error_message; ?>
-            </div>
-        <?php endif; ?>
 
         <form action="contact.php" method="POST">
             <div class="mb-4">

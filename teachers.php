@@ -1,19 +1,33 @@
 <?php
 include 'db.php';
 
-// Fetch all teachers from the database
-$result = $conn->query("SELECT * FROM teachers");
+// Prepare the base query
+$query = "SELECT * FROM teachers";
 
-// Apply search filter if 'search' is provided
+// Check if a search term is provided and add filtering conditions
 if (isset($_GET['search']) && !empty($_GET['search'])) {
-    $searchTerm = $conn->real_escape_string($_GET['search']);
-    $result = $conn->query("
-        SELECT * FROM teachers 
-        WHERE name LIKE '%$searchTerm%' 
-        OR email LIKE '%$searchTerm%' 
-        OR phonenumber LIKE '%$searchTerm%'
-    ");
+    $searchTerm = '%' . $_GET['search'] . '%'; // Add wildcard characters for LIKE query
+    $query .= " WHERE name LIKE :searchTerm 
+                OR email LIKE :searchTerm 
+                OR phonenumber LIKE :searchTerm";
 }
+
+// Prepare the statement
+$stmt = $pdo->prepare($query);
+
+// Bind parameters if the search term is present
+if (isset($searchTerm)) {
+    $stmt->bindParam(':searchTerm', $searchTerm, PDO::PARAM_STR);
+}
+
+// Execute the query
+$stmt->execute();
+
+// Fetch the results
+$teachers = $stmt->fetchAll(PDO::FETCH_ASSOC);
+
+// Check if there are any teachers found
+$hasTeachers = count($teachers) > 0;
 ?>
 
 <!DOCTYPE html>
@@ -46,7 +60,7 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
         </div>
 
         <!-- Teachers Table -->
-        <?php if ($result->num_rows > 0): ?>
+        <?php if ($hasTeachers): ?>
             <table class="table-auto w-full bg-white shadow-md rounded-md border-collapse">
                 <thead>
                     <tr class="bg-gray-200 text-gray-700">
@@ -58,7 +72,7 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
                     </tr>
                 </thead>
                 <tbody>
-                    <?php while ($row = $result->fetch_assoc()): ?>
+                    <?php foreach ($teachers as $row): ?>
                         <tr class="hover:bg-gray-100">
                             <td class="border px-4 py-2 text-center"><?php echo htmlspecialchars($row['id']); ?></td>
                             <td class="border px-4 py-2"><?php echo htmlspecialchars($row['name']); ?></td>
@@ -66,7 +80,7 @@ if (isset($_GET['search']) && !empty($_GET['search'])) {
                             <td class="border px-4 py-2"><?php echo htmlspecialchars($row['email']); ?></td>
                             <td class="border px-4 py-2"><?php echo htmlspecialchars($row['phonenumber']); ?></td>
                         </tr>
-                    <?php endwhile; ?>
+                    <?php endforeach; ?>
                 </tbody>
             </table>
         <?php else: ?>
