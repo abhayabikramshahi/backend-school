@@ -1,0 +1,260 @@
+/**
+ * Main CSS File
+ * 
+ * This file contains global styles for the School Management System.
+ * It complements Tailwind CSS with custom styles where needed.
+ */
+
+/* Custom Variables */
+:root {
+    --primary-color: #2563eb; /* Blue 600 */
+    --primary-dark: #1d4ed8; /* Blue 700 */
+    --primary-light: #3b82f6; /* Blue 500 */
+    --secondary-color: #4b5563; /* Gray 600 */
+    --success-color: #10b981; /* Green 500 */
+    --danger-color: #ef4444; /* Red 500 */
+    --warning-color: #f59e0b; /* Amber 500 */
+    --info-color: #6366f1; /* Indigo 500 */
+    --light-color: #f3f4f6; /* Gray 100 */
+    --dark-color: #1f2937; /* Gray 800 */
+}
+
+/* Global Styles */
+body {
+    font-family: 'Inter', system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+    color: #374151; /* Gray 700 */
+    line-height: 1.5;
+}
+
+/* Custom Card Styles */
+.card {
+    border-radius: 0.5rem;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.1), 0 2px 4px -1px rgba(0, 0, 0, 0.06);
+    background-color: #fff;
+    overflow: hidden;
+}
+
+.card-header {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #e5e7eb; /* Gray 200 */
+    font-weight: 600;
+}
+
+.card-body {
+    padding: 1.5rem;
+}
+
+/* Form Styles */
+.form-group {
+    margin-bottom: 1rem;
+}
+
+.form-label {
+    display: block;
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+    color: #4b5563; /* Gray 600 */
+}
+
+.form-control {
+    width: 100%;
+    padding: 0.5rem 0.75rem;
+    border: 1px solid #d1d5db; /* Gray 300 */
+    border-radius: 0.375rem;
+    background-color: #fff;
+    color: #1f2937; /* Gray 800 */
+    transition: border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.form-control:focus {
+    border-color: #93c5fd; /* Blue 300 */
+    outline: 0;
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.25); /* Blue 500 with opacity */
+}
+
+/* Button Styles */
+.btn {
+    display: inline-block;
+    font-weight: 500;
+    text-align: center;
+    vertical-align: middle;
+    cursor: pointer;
+    user-select: none;
+    padding: 0.5rem 1rem;
+    border-radius: 0.375rem;
+    transition: color 0.15s ease-in-out, background-color 0.15s ease-in-out, border-color 0.15s ease-in-out, box-shadow 0.15s ease-in-out;
+}
+
+.btn-primary {
+    color: #fff;
+    background-color: var(--primary-color);
+    border: 1px solid var(--primary-color);
+}
+
+.btn-primary:hover {
+    background-color: var(--primary-dark);
+    border-color: var(--primary-dark);
+}
+
+.btn-secondary {
+    color: #fff;
+    background-color: var(--secondary-color);
+    border: 1px solid var(--secondary-color);
+}
+
+.btn-secondary:hover {
+    background-color: #374151; /* Gray 700 */
+    border-color: #374151; /* Gray 700 */
+}
+
+.btn-success {
+    color: #fff;
+    background-color: var(--success-color);
+    border: 1px solid var(--success-color);
+}
+
+.btn-success:hover {
+    background-color: #059669; /* Green 600 */
+    border-color: #059669; /* Green 600 */
+}
+
+.btn-danger {
+    color: #fff;
+    background-color: var(--danger-color);
+    border: 1px solid var(--danger-color);
+}
+
+.btn-danger:hover {
+    background-color: #dc2626; /* Red 600 */
+    border-color: #dc2626; /* Red 600 */
+}
+
+/* Table Styles */
+.table {
+    width: 100%;
+    margin-bottom: 1rem;
+    color: #374151; /* Gray 700 */
+    border-collapse: collapse;
+}
+
+.table th,
+.table td {
+    padding: 0.75rem;
+    vertical-align: top;
+    border-top: 1px solid #e5e7eb; /* Gray 200 */
+}
+
+.table thead th {
+    vertical-align: bottom;
+    border-bottom: 2px solid #e5e7eb; /* Gray 200 */
+    background-color: #f9fafb; /* Gray 50 */
+    font-weight: 600;
+    color: #4b5563; /* Gray 600 */
+}
+
+.table tbody + tbody {
+    border-top: 2px solid #e5e7eb; /* Gray 200 */
+}
+
+/* Alert Styles */
+.alert {
+    position: relative;
+    padding: 0.75rem 1.25rem;
+    margin-bottom: 1rem;
+    border: 1px solid transparent;
+    border-radius: 0.375rem;
+}
+
+.alert-success {
+    color: #0f5132; /* Green 800 */
+    background-color: #d1e7dd; /* Green 100 */
+    border-color: #badbcc; /* Green 200 */
+}
+
+.alert-danger {
+    color: #842029; /* Red 800 */
+    background-color: #f8d7da; /* Red 100 */
+    border-color: #f5c2c7; /* Red 200 */
+}
+
+.alert-warning {
+    color: #664d03; /* Yellow 800 */
+    background-color: #fff3cd; /* Yellow 100 */
+    border-color: #ffecb5; /* Yellow 200 */
+}
+
+.alert-info {
+    color: #055160; /* Cyan 800 */
+    background-color: #cff4fc; /* Cyan 100 */
+    border-color: #b6effb; /* Cyan 200 */
+}
+
+/* Utility Classes */
+.text-center {
+    text-align: center;
+}
+
+.text-right {
+    text-align: right;
+}
+
+.text-left {
+    text-align: left;
+}
+
+.font-bold {
+    font-weight: 700;
+}
+
+.font-semibold {
+    font-weight: 600;
+}
+
+.text-sm {
+    font-size: 0.875rem;
+}
+
+.text-lg {
+    font-size: 1.125rem;
+}
+
+.text-xl {
+    font-size: 1.25rem;
+}
+
+.text-2xl {
+    font-size: 1.5rem;
+}
+
+.mt-1 {
+    margin-top: 0.25rem;
+}
+
+.mt-2 {
+    margin-top: 0.5rem;
+}
+
+.mt-4 {
+    margin-top: 1rem;
+}
+
+.mb-2 {
+    margin-bottom: 0.5rem;
+}
+
+.mb-4 {
+    margin-bottom: 1rem;
+}
+
+/* Responsive Utilities */
+@media (max-width: 640px) {
+    .container {
+        padding-left: 1rem;
+        padding-right: 1rem;
+    }
+    
+    .card-header,
+    .card-body {
+        padding: 1rem;
+    }
+}

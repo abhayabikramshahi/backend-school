@@ -2,24 +2,24 @@
 /**
  * View Notices (Alternative Version)
  * 
- * This file serves as an alternative interface for viewing school notices and announcements.
+ * This file serves as an alternative interface for teachers to view school notices and announcements.
  */
 
 // Include authentication functions
-require_once __DIR__ . '/auth/auth_functions.php';
+require_once __DIR__ . '/../auth/auth_functions.php';
 
 // Initialize Auth class
 $auth = new Auth();
 
-// Check if user is logged in
-if (!$auth->isLoggedIn()) {
-    header('Location: auth/login.php');
+// Check if user is logged in and has teacher role
+if (!$auth->isLoggedIn() || !$auth->hasRole('teacher')) {
+    header('Location: ../auth/login.php');
     exit;
 }
 
 // Check session timeout
 if (!$auth->checkSessionTimeout()) {
-    header('Location: auth/login.php');
+    header('Location: ../auth/login.php');
     exit;
 }
 
@@ -27,7 +27,7 @@ if (!$auth->checkSessionTimeout()) {
 $user = $auth->getCurrentUser();
 
 // Include database connection
-require_once __DIR__ . '/includes/Database.php';
+require_once __DIR__ . '/../includes/Database.php';
 $db = Database::getInstance();
 $conn = $db->getConnection();
 
@@ -53,10 +53,10 @@ $categories = $db->getRecords($categories_query);
 
 // Set page variables for header
 $page_title = 'School Notices';
-$base_path = '.';
+$base_path = '..';
 
 // Include header
-include_once 'includes/header.php';
+include_once '../includes/header.php';
 ?>
 
 <!-- Main Content -->
@@ -117,7 +117,8 @@ include_once 'includes/header.php';
                             </div>
                         </div>
                         <div class="mt-4 text-gray-700">
-                            <?php echo nl2br(htmlspecialchars($notice['content'])); ?></div>
+                            <?php echo nl2br(htmlspecialchars($notice['content'])); ?>
+                        </div>
                     </div>
                 <?php endforeach; ?>
             </div>
@@ -125,4 +126,4 @@ include_once 'includes/header.php';
     </div>
 </main>
 
-<?php include_once 'includes/footer.php'; ?>
+<?php include_once '../includes/footer.php'; ?>

@@ -1,0 +1,263 @@
+<?php
+// Include database connection
+include '../manage/db.php';
+include '../manage/common.php';
+
+// Check if user is logged in
+session_start();
+if (!isset($_SESSION['username'])) {
+    header("Location: ../index.php");
+    exit();
+}
+
+// Initialize variables
+$success_message = "";
+$error_message = "";
+
+// Process form submission
+if ($_SERVER["REQUEST_METHOD"] == "POST") {
+    // Validate and sanitize inputs
+    $student_id = isset($_POST['student_id']) ? $_POST['student_id'] : '';
+    $student_name = isset($_POST['student_name']) ? $_POST['student_name'] : '';
+    $roll_number = isset($_POST['roll_number']) ? $_POST['roll_number'] : '';
+    $exam_type = isset($_POST['exam_type']) ? $_POST['exam_type'] : '';
+    $year = isset($_POST['year']) ? $_POST['year'] : '';
+    
+    // Subject marks
+    $bangla = isset($_POST['bangla']) ? (int)$_POST['bangla'] : 0;
+    $english = isset($_POST['english']) ? (int)$_POST['english'] : 0;
+    $math = isset($_POST['math']) ? (int)$_POST['math'] : 0;
+    $science = isset($_POST['science']) ? (int)$_POST['science'] : 0;
+    $social_science = isset($_POST['social_science']) ? (int)$_POST['social_science'] : 0;
+    $religion = isset($_POST['religion']) ? (int)$_POST['religion'] : 0;
+    $ict = isset($_POST['ict']) ? (int)$_POST['ict'] : 0;
+    
+    // Calculate total and average
+    $total_marks = $bangla + $english + $math + $science + $social_science + $religion + $ict;
+    $total_subjects = 7; // Total number of subjects
+    $average = $total_marks / $total_subjects;
+    
+    // Determine grade based on average
+    $grade = calculateGrade($average);
+    
+    // Validate required fields
+    if (empty($student_id) || empty($student_name) || empty($roll_number) || empty($exam_type) || empty($year)) {
+        $error_message = "All fields are required!";
+    } else {
+        // Check if result already exists
+        $check_query = "SELECT * FROM results WHERE student_id = ? AND exam_type = ? AND year = ? AND class = 'class7'";
+        $stmt = $pdo->prepare($check_query);
+        $stmt->execute([$student_id, $exam_type, $year]);
+        
+        if ($stmt->rowCount() > 0) {
+            // Update existing result
+            $update_query = "UPDATE results SET 
+                student_name = ?,
+                roll_number = ?,
+                bangla = ?,
+                english = ?,
+                math = ?,
+                science = ?,
+                social_science = ?,
+                religion = ?,
+                ict = ?,
+                total_marks = ?,
+                average = ?,
+                grade = ?
+                WHERE student_id = ? AND exam_type = ? AND year = ? AND class = 'class7'";
+            
+            $stmt = $pdo->prepare($update_query);
+            $result = $stmt->execute([
+                $student_name,
+                $roll_number,
+                $bangla,
+                $english,
+                $math,
+                $science,
+                $social_science,
+                $religion,
+                $ict,
+                $total_marks,
+                $average,
+                $grade,
+                $student_id,
+                $exam_type,
+                $year
+            ]);
+            
+            if ($result) {
+                $success_message = "Result updated successfully!";
+            } else {
+                $error_message = "Error updating result: " . implode(", ", $stmt->errorInfo());
+            }
+        } else {
+            // Insert new result
+            $insert_query = "INSERT INTO results (student_id, student_name, roll_number, class, exam_type, year, bangla, english, math, science, social_science, religion, ict, total_marks, average, grade) 
+                VALUES (?, ?, ?, 'class7', ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+            
+            $stmt = $pdo->prepare($insert_query);
+            $result = $stmt->execute([
+                $student_id,
+                $student_name,
+                $roll_number,
+                $exam_type,
+                $year,
+                $bangla,
+                $english,
+                $math,
+                $science,
+                $social_science,
+                $religion,
+                $ict,
+                $total_marks,
+                $average,
+                $grade
+            ]);
+            
+            if ($result) {
+                $success_message = "Result uploaded successfully!";
+            } else {
+                $error_message = "Error uploading result: " . implode(", ", $stmt->errorInfo());
+            }
+        }
+    }
+}
+
+// Function to calculate grade
+function calculateGrade($average) {
+    if ($average >= 80) {
+        return 'A+';
+    } elseif ($average >= 70) {
+        return 'A';
+    } elseif ($average >= 60) {
+        return 'A-';
+    } elseif ($average >= 50) {
+        return 'B';
+    } elseif ($average >= 40) {
+        return 'C';
+    } elseif ($average >= 33) {
+        return 'D';
+    } else {
+        return 'F';
+    }
+}
+?>
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upload Class 7 Results</title>
+    <link rel="stylesheet" href="../css/bootstrap.min.css">
+    <link rel="stylesheet" href="../css/style.css">
+</head>
+<body>
+    <div class="container mt-4">
+        <div class="row">
+            <div class="col-md-12">
+                <h2 class="text-center mb-4">Upload Class 7 Results</h2>
+                
+                <?php if (!empty($success_message)): ?>
+                    <div class="alert alert-success"><?php echo $success_message; ?></div>
+                <?php endif; ?>
+                
+                <?php if (!empty($error_message)): ?>
+                    <div class="alert alert-danger"><?php echo $error_message; ?></div>
+                <?php endif; ?>
+                
+                <div class="card">
+                    <div class="card-header bg-primary text-white">
+                        <h5 class="mb-0">Student Result Form</h5>
+                    </div>
+                    <div class="card-body">
+                        <form method="post" action="">
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="student_id">Student ID</label>
+                                    <input type="text" class="form-control" id="student_id" name="student_id" required>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="student_name">Student Name</label>
+                                    <input type="text" class="form-control" id="student_name" name="student_name" required>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="roll_number">Roll Number</label>
+                                    <input type="text" class="form-control" id="roll_number" name="roll_number" required>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-6 mb-3">
+                                    <label for="exam_type">Examination Type</label>
+                                    <select class="form-control" id="exam_type" name="exam_type" required>
+                                        <option value="">Select Exam Type</option>
+                                        <option value="First Term">First Term</option>
+                                        <option value="Mid Term">Mid Term</option>
+                                        <option value="Final Term">Final Term</option>
+                                    </select>
+                                </div>
+                                <div class="col-md-6 mb-3">
+                                    <label for="year">Year</label>
+                                    <select class="form-control" id="year" name="year" required>
+                                        <option value="">Select Year</option>
+                                        <?php 
+                                        $current_year = date('Y');
+                                        for ($i = $current_year; $i >= $current_year - 5; $i--) {
+                                            echo "<option value=\"$i\">$i</option>";
+                                        }
+                                        ?>
+                                    </select>
+                                </div>
+                            </div>
+                            
+                            <h5 class="mt-4 mb-3">Subject Marks</h5>
+                            <div class="row">
+                                <div class="col-md-3 mb-3">
+                                    <label for="bangla">Bangla</label>
+                                    <input type="number" class="form-control" id="bangla" name="bangla" min="0" max="100" required>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="english">English</label>
+                                    <input type="number" class="form-control" id="english" name="english" min="0" max="100" required>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="math">Mathematics</label>
+                                    <input type="number" class="form-control" id="math" name="math" min="0" max="100" required>
+                                </div>
+                                <div class="col-md-3 mb-3">
+                                    <label for="science">Science</label>
+                                    <input type="number" class="form-control" id="science" name="science" min="0" max="100" required>
+                                </div>
+                            </div>
+                            
+                            <div class="row">
+                                <div class="col-md-4 mb-3">
+                                    <label for="social_science">Social Science</label>
+                                    <input type="number" class="form-control" id="social_science" name="social_science" min="0" max="100" required>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="religion">Religion</label>
+                                    <input type="number" class="form-control" id="religion" name="religion" min="0" max="100" required>
+                                </div>
+                                <div class="col-md-4 mb-3">
+                                    <label for="ict">ICT</label>
+                                    <input type="number" class="form-control" id="ict" name="ict" min="0" max="100" required>
+                                </div>
+                            </div>
+                            
+                            <div class="text-center mt-4">
+                                <button type="submit" class="btn btn-primary">Upload Result</button>
+                                <a href="../index.php" class="btn btn-secondary ml-2">Back to Dashboard</a>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+    
+    <script src="../js/jquery.min.js"></script>
+    <script src="../js/bootstrap.bundle.min.js"></script>
+</body>
+</html>
