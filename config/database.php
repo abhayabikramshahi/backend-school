@@ -1,10 +1,4 @@
 <?php
-/**
- * Database Configuration File
- * 
- * This file handles the database connection using PDO with proper error handling
- * and security measures.
- */
 
 class Database {
     private $host = 'localhost';
@@ -14,9 +8,7 @@ class Database {
     private $conn;
     private static $instance = null;
     
-    /**
-     * Constructor - establishes database connection
-     */
+
     private function __construct() {
         try {
             $dsn = "mysql:host={$this->host};dbname={$this->dbname};charset=utf8mb4";
@@ -34,7 +26,7 @@ class Database {
             die('Database connection failed. Please try again later.');
         }
     }
-    
+        
     /**
      * Get database instance (Singleton pattern)
      * 

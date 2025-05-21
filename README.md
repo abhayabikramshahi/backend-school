@@ -14,6 +14,7 @@
 6. [Installation & Usage](#installation--usage)
 7. [Implementation Plan](#implementation-plan)
 8. [Security & Maintenance](#security--maintenance)
+9. [Render.com Deployment](#rendercom-deployment)
 
 ---
 
@@ -43,6 +44,39 @@ Built with PHP (PDO), MySQL, Tailwind CSS, and JavaScript.
 * **Responsive UI**: Tailwind CSS ensures mobile-friendly design.
 * **Security**: Prepared statements, bcrypt hashing, CSRF protection, input validation.
 * **User Suspension**: Ability to suspend and ban users with automatic expiration.
+
+---
+
+## Render.com Deployment
+
+Follow these steps to deploy the application to Render.com:
+
+### Prerequisites
+
+1. A Render.com account
+2. A MySQL database (you can use an external MySQL service like AWS RDS, DigitalOcean, or PlanetScale)
+
+### Quick Deployment Steps
+
+1. Fork or clone this repository to your GitHub account
+2. Log in to Render.com and create a new Web Service
+3. Connect your GitHub repository
+4. Configure the service with the following settings:
+   - **Environment**: PHP
+   - **Build Command**: `composer install`
+   - **Start Command**: `vendor/bin/heroku-php-apache2 .`
+5. Add the required environment variables:
+   ```
+   DB_HOST=your_database_host
+   DB_NAME=your_database_name
+   DB_USERNAME=your_database_username
+   DB_PASSWORD=your_database_password
+   APP_ENV=production
+   APP_DEBUG=false
+   ```
+6. Deploy the service
+
+For more detailed deployment instructions, please refer to the [RENDER_DEPLOYMENT.md](RENDER_DEPLOYMENT.md) file.
 
 ---
 

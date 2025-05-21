@@ -1,0 +1,34 @@
+# Render.com PHP Configuration
+
+# Enable URL rewriting
+RewriteEngine On
+
+# Set default index file
+DirectoryIndex index.php
+
+# Prevent directory listing
+Options -Indexes
+
+# Set PHP environment variables
+<IfModule mod_env.c>
+    # Set environment to production
+    SetEnv APP_ENV production
+    
+    # PHP settings
+    php_flag display_errors off
+    php_value error_reporting 0
+    php_value upload_max_filesize 10M
+    php_value post_max_size 10M
+    php_value max_execution_time 30
+    php_value max_input_time 60
+</IfModule>
+
+# Protect sensitive files
+<FilesMatch "^\.(env|htaccess|git)">
+    Order Allow,Deny
+    Deny from all
+</FilesMatch>
+
+# Handle errors
+ErrorDocument 404 /index.php
+ErrorDocument 403 /index.php

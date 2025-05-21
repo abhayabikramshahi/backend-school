@@ -1,0 +1,26 @@
+{
+    "name": "school/management-system",
+    "description": "School Management System",
+    "type": "project",
+    "require": {
+        "php": "^7.4|^8.0",
+        "ext-pdo": "*",
+        "heroku/heroku-buildpack-php": "^0.1"
+    },
+    "require-dev": {},
+    "scripts": {
+        "post-install-cmd": [
+            "@php -r \"file_exists('.env') || copy('.env.example', '.env');\""
+        ],
+        "post-deploy-cmd": [
+            "@php setup_render_database.php"
+        ]
+    },
+    "config": {
+        "optimize-autoloader": true,
+        "preferred-install": "dist",
+        "sort-packages": true
+    },
+    "minimum-stability": "stable",
+    "prefer-stable": true
+}

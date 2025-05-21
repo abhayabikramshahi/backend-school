@@ -6,6 +6,9 @@
  * It checks for authentication and redirects to appropriate pages.
  */
 
+// Load environment variables
+require_once __DIR__ . '/env_loader.php';
+
 // Include authentication functions
 require_once __DIR__ . '/auth/auth_functions.php';
 
@@ -13,7 +16,12 @@ require_once __DIR__ . '/auth/auth_functions.php';
 $auth = new Auth();
 
 // Initialize database connection
-require_once __DIR__ . '/includes/Database.php';
+// Use environment-aware Database class if available
+if (file_exists(__DIR__ . '/includes/Database.env.php')) {
+    require_once __DIR__ . '/includes/Database.env.php';
+} else {
+    require_once __DIR__ . '/includes/Database.php';
+}
 $db = Database::getInstance();
 
 // Get counts for dashboard

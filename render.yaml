@@ -1,0 +1,22 @@
+# Render.com configuration file
+services:
+  - type: web
+    name: school-management-system
+    env: php
+    buildCommand: composer install
+    startCommand: vendor/bin/heroku-php-apache2 .
+    envVars:
+      - key: DB_HOST
+        sync: false
+      - key: DB_NAME
+        sync: false
+      - key: DB_USERNAME
+        sync: false
+      - key: DB_PASSWORD
+        sync: false
+      - key: APP_ENV
+        value: production
+      - key: APP_DEBUG
+        value: false
+    healthCheckPath: /
+    autoDeploy: true
