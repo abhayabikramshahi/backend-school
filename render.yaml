@@ -4,7 +4,9 @@ services:
     name: school-management-system
     env: php
     buildCommand: composer install
-    startCommand: vendor/bin/heroku-php-apache2 .
+    startCommand: |
+      echo "LoadModule rewrite_module /usr/lib/apache2/modules/mod_rewrite.so" > apache_config
+      vendor/bin/heroku-php-apache2 -C apache_config .
     envVars:
       - key: DB_HOST
         sync: false

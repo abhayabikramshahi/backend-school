@@ -1,7 +1,9 @@
 # Render.com PHP Configuration
 
-# Enable URL rewriting
-RewriteEngine On
+# Enable URL rewriting if mod_rewrite is available
+<IfModule mod_rewrite.c>
+    RewriteEngine On
+</IfModule>
 
 # Set default index file
 DirectoryIndex index.php
@@ -31,8 +33,15 @@ Options -Indexes
 
 # Protect sensitive files
 <FilesMatch "^\.(env|htaccess|git)">
-    Order Allow,Deny
-    Deny from all
+    <IfModule mod_authz_core.c>
+        # Apache 2.4+
+        Require all denied
+    </IfModule>
+    <IfModule !mod_authz_core.c>
+        # Apache 2.2 and older
+        Order Allow,Deny
+        Deny from all
+    </IfModule>
 </FilesMatch>
 
 # Handle errors
