@@ -9,17 +9,23 @@ DirectoryIndex index.php
 # Prevent directory listing
 Options -Indexes
 
-# Set PHP environment variables
-<IfModule mod_env.c>
-    # Set environment to production
-    SetEnv APP_ENV production
-    
-    # PHP settings
-    php_flag display_errors off
-    php_value error_reporting 0
+# Enable PHP error display for debugging (temporarily)
+<IfModule mod_php7.c>
+    php_flag display_errors on
+    php_value error_reporting E_ALL
     php_value upload_max_filesize 10M
     php_value post_max_size 10M
-    php_value max_execution_time 30
+    php_value max_execution_time 60
+    php_value max_input_time 60
+</IfModule>
+
+# For PHP 8.x
+<IfModule mod_php8.c>
+    php_flag display_errors on
+    php_value error_reporting E_ALL
+    php_value upload_max_filesize 10M
+    php_value post_max_size 10M
+    php_value max_execution_time 60
     php_value max_input_time 60
 </IfModule>
 
@@ -32,3 +38,4 @@ Options -Indexes
 # Handle errors
 ErrorDocument 404 /index.php
 ErrorDocument 403 /index.php
+ErrorDocument 500 /index.php

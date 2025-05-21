@@ -16,12 +16,8 @@ require_once __DIR__ . '/auth/auth_functions.php';
 $auth = new Auth();
 
 // Initialize database connection
-// Use environment-aware Database class if available
-if (file_exists(__DIR__ . '/includes/Database.env.php')) {
-    require_once __DIR__ . '/includes/Database.env.php';
-} else {
-    require_once __DIR__ . '/includes/Database.php';
-}
+// Use bootstrap to load the appropriate database configuration
+require_once __DIR__ . '/config/bootstrap.php';
 $db = Database::getInstance();
 
 // Get counts for dashboard

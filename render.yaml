@@ -18,5 +18,7 @@ services:
         value: production
       - key: APP_DEBUG
         value: false
+    runtime: php
+    phpVersion: 8.0
     healthCheckPath: /
     autoDeploy: true
