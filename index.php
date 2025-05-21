@@ -17,7 +17,7 @@ $auth = new Auth();
 
 // Initialize database connection
 // Use bootstrap to load the appropriate database configuration
-require_once __DIR__ . '/config/bootstrap.php';
+
 $db = Database::getInstance();
 
 // Get counts for dashboard
