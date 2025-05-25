@@ -111,7 +111,7 @@ if ($_SERVER['REQUEST_METHOD'] === 'POST') {
                 <div class="mt-6 text-center">
                     <p class="text-sm text-gray-600">
                         Don't have an account? 
-                        <a href="register.php" class="text-black hover:text-gray-700 font-medium transition-colors duration-300">
+                        <a href="contact_admin.php" class="text-black hover:text-gray-700 font-medium transition-colors duration-300">
                             Contact Administrator
                         </a>
                     </p>

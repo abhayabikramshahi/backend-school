@@ -175,7 +175,7 @@ CREATE INDEX idx_student_exam ON results(student_id, exam_type, year, class);
 
 -- Insert default admin user if not exists
 INSERT INTO users (username, password, role, user_id, is_suspended, is_banned)
-SELECT 'admin', '$2y$10$8WxhZ0NeVg7djfZfJfSGWOqRz6nQrKHwQvWN5JWI5.ZXRxJNUU5Aq', 'admin', 'ADMIN001', 0, 0
+SELECT 'admin', ' $2y$10$DEnnYw37lBY2.pN2jkpfd.v1BM8oymRkJCSU0Ms1Yob9o70dVXVT', 'admin', 'ADMIN001', 0, 0
 FROM dual
 WHERE NOT EXISTS (SELECT 1 FROM users WHERE username = 'admin');
 

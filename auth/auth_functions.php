@@ -54,6 +54,11 @@ class Auth {
         }
         
         // Verify password
+        echo "
+
+"; echo "Username: " . htmlspecialchars($username) . "\n"; echo "Entered Password: " . htmlspecialchars($password) . "\n"; if ($user) { echo "Retrieved Hash: " . htmlspecialchars($user['password']) . "\n"; echo "Password Verify Result: " . (password_verify($password, $user['password']) ? 'Match' : 'No Match') . "\n"; } else { echo "User not found in database.\n"; } echo "
+";
+
         if (password_verify($password, $user['password'])) {
             // Set session variables
             $_SESSION['user_id'] = $user['id'];
@@ -142,7 +147,7 @@ class Auth {
             // Create default admin user if none exists
             $default_admin = [
                 'username' => 'admin',
-                'password' => password_hash('admin123', PASSWORD_DEFAULT),
+                'password' => password_hash('admin', PASSWORD_DEFAULT),
                 'role' => 'admin',
                 'created_at' => date('Y-m-d H:i:s')
             ];
