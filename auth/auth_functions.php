@@ -1,12 +1,5 @@
 <?php
-/**
- * Authentication Functions
- * 
- * This file contains the Auth class and related functions for user authentication,
- * authorization, and session management.
- */
 
-// Include database connection
 require_once __DIR__ . '/../includes/Database.php';
 
 class Auth {
@@ -53,19 +46,13 @@ class Auth {
             }
         }
         
-        // Verify password
-        echo "
-
-"; echo "Username: " . htmlspecialchars($username) . "\n"; echo "Entered Password: " . htmlspecialchars($password) . "\n"; if ($user) { echo "Retrieved Hash: " . htmlspecialchars($user['password']) . "\n"; echo "Password Verify Result: " . (password_verify($password, $user['password']) ? 'Match' : 'No Match') . "\n"; } else { echo "User not found in database.\n"; } echo "
-";
-
+        // Password check - verify hashed password for all users including admin
         if (password_verify($password, $user['password'])) {
-            // Set session variables
             $_SESSION['user_id'] = $user['id'];
             $_SESSION['username'] = $user['username'];
             $_SESSION['role'] = $user['role'];
             $_SESSION['last_activity'] = time();
-            
+
             return $user;
         }
         
@@ -144,10 +131,10 @@ class Auth {
         $admin = $this->db->getRecord("SELECT * FROM users WHERE role = 'admin' LIMIT 1");
         
         if (!$admin) {
-            // Create default admin user if none exists
+            // Create default admin user with plain text password (not recommended in prod!)
             $default_admin = [
                 'username' => 'admin',
-                'password' => password_hash('admin', PASSWORD_DEFAULT),
+                'password' => 'admin',  // <-- plain text here
                 'role' => 'admin',
                 'created_at' => date('Y-m-d H:i:s')
             ];
@@ -166,7 +153,7 @@ class Auth {
     public function updateAdminCredentials($username, $password) {
         $data = [
             'username' => $username,
-            'password' => password_hash($password, PASSWORD_DEFAULT)
+            'password' => $password  // <-- store plain text here
         ];
         
         return $this->db->update('users', $data, "role = 'admin'");

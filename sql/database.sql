@@ -1,13 +1,8 @@
--- Consolidated Database Setup Script for School Management System
--- This file contains all necessary SQL commands to set up the database structure
-
--- Create database if it doesn't exist
-CREATE DATABASE IF NOT EXISTS look;
-
--- Use the database
+DROP DATABASE IF EXISTS look;
+CREATE DATABASE look;
 USE look;
 
--- Create a table for users (for login/signup functionality)
+-- Create a table for users
 CREATE TABLE IF NOT EXISTS users (
     id INT AUTO_INCREMENT PRIMARY KEY,
     username VARCHAR(50) NOT NULL UNIQUE,
@@ -89,7 +84,7 @@ CREATE TABLE IF NOT EXISTS subjects (
     FOREIGN KEY (teacher_id) REFERENCES teachers(id) ON DELETE SET NULL
 );
 
--- Create a table for results (normalized structure)
+-- Create a table for results
 CREATE TABLE IF NOT EXISTS results (
     id INT AUTO_INCREMENT PRIMARY KEY,
     student_id INT NOT NULL,
@@ -140,7 +135,7 @@ CREATE TABLE IF NOT EXISTS events (
     created_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
--- Create a table for user complaints/contact
+-- Create a table for complaints
 CREATE TABLE IF NOT EXISTS complaints (
     id INT AUTO_INCREMENT PRIMARY KEY,
     user_id INT NOT NULL,
@@ -152,7 +147,7 @@ CREATE TABLE IF NOT EXISTS complaints (
     FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE
 );
 
--- Create a table for contact messages from suspended/banned users
+-- Create a table for contact messages
 CREATE TABLE IF NOT EXISTS contact_messages (
     id INT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(100) NOT NULL,
@@ -165,7 +160,7 @@ CREATE TABLE IF NOT EXISTS contact_messages (
     updated_at TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
 );
 
--- Add indexes for better performance
+-- Create indexes
 CREATE INDEX idx_teachers_name ON teachers(name);
 CREATE INDEX idx_students_name ON students(name);
 CREATE INDEX idx_students_class ON students(class);
@@ -173,11 +168,11 @@ CREATE INDEX idx_notices_title ON notices(title);
 CREATE INDEX idx_vacancies_title ON vacancies(title);
 CREATE INDEX idx_student_exam ON results(student_id, exam_type, year, class);
 
--- Insert default admin user if not exists
+-- Insert default admin if not exists
 INSERT INTO users (username, password, role, user_id, is_suspended, is_banned)
-SELECT 'admin', ' $2y$10$DEnnYw37lBY2.pN2jkpfd.v1BM8oymRkJCSU0Ms1Yob9o70dVXVT', 'admin', 'ADMIN001', 0, 0
+SELECT 'admin', '$2y$10$URRQlQTTMdRrmLujTrSh8ug3EAAdK69TZlP0WRtsYyNV4kDhWY6F2', 'admin', 'ADMIN001', 0, 0
 FROM dual
 WHERE NOT EXISTS (SELECT 1 FROM users WHERE username = 'admin');
 
-
-#1072 - Key column 'name' doesn't exist in table
+-- Optional: Show admin username and hashed password after insert
+SELECT username, password FROM users WHERE username = 'admin';
